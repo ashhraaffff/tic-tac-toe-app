@@ -31,8 +31,19 @@
   <string name="lost">LOST</string>
   <string name="open_games">OPEN GAMES</string>
 
+  <string name="nick_text">Enter your nickname</string>
+
   <string name="initial_game_number"># 0</string>
   <string name="initial_game_name">Game XYZ</string>
-  <string name="nick_text">Enter your nickname</string>
+  <string name="your_turn">Your turn</string>
+  <string name="you_win">You Win!</string>
+  <string name="you_lose">You Lose!</string>
+  <string name="draw">Draw!</string>
+  <string name="go_back">BACK</string>
+
+  <string name="ok">OK</string>
+  <string name="congratulations">Congratulations!</string>
+  <string name="sorry">Sorry!</string>
+  <string name="waiting">Waiting...</string>
   <string name="quit">QUIT</string>
 </resources>
