@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".LoginFragment">
+
+  <!-- Email EditText -->
+  <EditText
+      android:id="@+id/edit_email"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/text_margin"
+      android:autofillHints="@string/email"
+      android:hint="  Email"
+      android:inputType="textEmailAddress"
+      android:textColor="@color/white"
+      android:textColorHint="@color/white"
+      android:minHeight="48dp"
+      android:background="@drawable/rounded_edittext"
+      app:layout_constraintBottom_toTopOf="@+id/edit_password"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_chainStyle="packed" />
+
+  <!-- Password EditText -->
+  <EditText
+      android:id="@+id/edit_password"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/text_margin"
+      android:autofillHints="Password"
+      android:hint=" Password"
+      android:ems="10"
+      android:textColor="@color/white"
+      android:textColorHint="@color/white"
+      android:inputType="textPassword"
+      android:minHeight="48dp"
+      android:background="@drawable/rounded_edittext"
+      app:layout_constraintBottom_toTopOf="@+id/button_group"
+      app:layout_constraintEnd_toEndOf="@+id/edit_email"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintStart_toStartOf="@+id/edit_email"
+      app:layout_constraintTop_toBottomOf="@+id/edit_email" />
+
+  <!-- Button Group -->
+  <LinearLayout
+      android:id="@+id/button_group"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:layout_marginTop="16dp"
+      android:gravity="center_horizontal"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="@+id/edit_password"
+      app:layout_constraintStart_toStartOf="@+id/edit_password"
+      app:layout_constraintTop_toBottomOf="@+id/edit_password">
+
+    <!-- Register Button -->
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/register"
+        android:textColor="@color/white"
+        android:background="@color/blue"
+        android:layout_marginEnd="16dp" />
+
+    <!-- Login Button -->
+    <Button
+        android:id="@+id/btn_log_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login"
+        android:textColor="@color/white"
+        android:background="@color/blue"/>
+  </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
