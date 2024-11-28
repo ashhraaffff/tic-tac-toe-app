@@ -19,6 +19,9 @@
       android:name="androidsamples.java.tictactoe.GameFragment"
       android:label="@string/game_fragment_label"
       tools:layout="@layout/fragment_game_new">
+    <action
+        android:id="@+id/action_need_auth"
+        app:destination="@id/loginFragment" />
     <argument
         android:name="gameType"
         app:argType="string" />

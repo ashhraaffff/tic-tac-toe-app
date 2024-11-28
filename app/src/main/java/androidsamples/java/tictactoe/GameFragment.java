@@ -60,7 +60,7 @@ public class GameFragment extends Fragment {
   private GameModel game;
 
   private ValueEventListener gameInitializerListener, gameStateUpdateListener,
-          userForfeitUpdateListener , userQuitUpdateListener,  userWinUpdateListener, userLossUpdateListener;
+          userForfeitUpdateListener, userForfeitUpdateListener2 , userQuitUpdateListener,  userWinUpdateListener, userLossUpdateListener;
 
   private boolean enableMockAI = false; // Static field to persist mock state
   private List<Integer> mockAIMoves;
@@ -634,6 +634,7 @@ public class GameFragment extends Fragment {
     removeListener(gameReference, gameInitializerListener, "gameInitializerListener");
     removeListener(gameReference, gameStateUpdateListener, "gameStateUpdateListener");
     removeListener(userReference, userForfeitUpdateListener, "userForfeitUpdateListener");
+    removeListener(userReference, userForfeitUpdateListener2, "userForfeitUpdateListener");
     removeListener(userReference, userQuitUpdateListener, "userQuitUpdateListener");
     removeListener(userReference, userWinUpdateListener, "userWinUpdateListener");
     removeListener(userReference, userLossUpdateListener, "userLossUpdateListener");
@@ -650,5 +651,59 @@ public class GameFragment extends Fragment {
     }
   }
 
+
+  public void forfeitGame() {
+    // Check if the game is not already ended
+    Log.d(TAG, "Method called in GameFragment");
+    if (!gameEnded) {
+      AlertDialog dialog = new AlertDialog.Builder(requireActivity())
+              .setTitle(R.string.confirm)
+              .setMessage(R.string.forfeit_game_dialog_message)
+              .setPositiveButton(R.string.yes, (d, which) -> {
+                userForfeitUpdateListener2 = new ValueEventListener(){
+                  @Override
+                  public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (isAdded() && !isDetached()) {
+                      int value = Integer.parseInt(dataSnapshot.child("lost").getValue().toString());
+                      value = value + 1;
+                      dataSnapshot.getRef().child("lost").setValue(value);
+                    }else{
+                      Log.w("GameFragment", "onDataChange called, but Fragment is no longer attached!");
+                    }
+                  }
+
+                  @Override
+                  public void onCancelled(@NonNull DatabaseError error) {}
+                };
+
+                userReference.addListenerForSingleValueEvent(userForfeitUpdateListener2);
+
+
+                if(!isSinglePlayer){
+                  gameReference.child("hasForfeit").setValue(true);
+                  gameEnded = true;
+                }
+              })
+              .setNegativeButton(R.string.cancel, (d, which) -> d.dismiss())
+              .create();
+      dialog.show();
+
+
+      // Always sign out and navigate
+      FirebaseAuth.getInstance().signOut();
+
+      // Use popBackStack to clear the back stack and navigate to login
+      try {
+        mNavController.popBackStack(R.id.loginFragment, false);
+      } catch (IllegalArgumentException e) {
+        // If popBackStack fails, use navigate with explicit action
+        if(!isSinglePlayer){
+          gameReference.child("hasForfeit").setValue(true);
+          gameEnded = true;
+        }
+        mNavController.navigate(R.id.action_need_auth);
+      }
+    }
+  }
 
 }
