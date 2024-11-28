@@ -6,12 +6,20 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class OpenGamesAdapter extends RecyclerView.Adapter<OpenGamesAdapter.ViewHolder> {
+import java.util.ArrayList;
 
-  public OpenGamesAdapter() {
-    // FIXME if needed
+public class OpenGamesAdapter extends RecyclerView.Adapter<OpenGamesAdapter.ViewHolder> {
+  private ArrayList<GameModel> list;
+  private NavController navController;
+
+  public OpenGamesAdapter(ArrayList<GameModel> list, NavController navController) {
+    this.list = list;
+    this.navController = navController;
   }
 
   @NonNull
@@ -24,7 +32,7 @@ public class OpenGamesAdapter extends RecyclerView.Adapter<OpenGamesAdapter.View
 
   @Override
   public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-    // TODO bind the item at the given position to the holder
+    holder.populate(list.get(position).getNickname() +"'s Game", list.get(position).getGameId(), position + 1);
   }
 
   @Override
@@ -48,6 +56,15 @@ public class OpenGamesAdapter extends RecyclerView.Adapter<OpenGamesAdapter.View
     @Override
     public String toString() {
       return super.toString() + " '" + mContentView.getText() + "'";
+    }
+
+    public void populate (String gameNick, String gameId, int i) {
+      mContentView.setText(gameNick);
+      mIdView.setText("#" + i);
+      mView.setOnClickListener(v -> {
+        NavDirections action = DashboardFragmentDirections.actionGame("Two-Player", gameId);
+        Navigation.findNavController(mView).navigate(action);
+      });
     }
   }
 }
