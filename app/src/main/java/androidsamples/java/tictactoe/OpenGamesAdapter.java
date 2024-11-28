@@ -37,7 +37,7 @@ public class OpenGamesAdapter extends RecyclerView.Adapter<OpenGamesAdapter.View
 
   @Override
   public int getItemCount() {
-    return 0; // FIXME
+    return list.size();
   }
 
   public class ViewHolder extends RecyclerView.ViewHolder {
