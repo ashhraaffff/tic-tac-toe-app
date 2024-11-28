@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "205126685074",
+    "firebase_url": "https://boomboomtictactoe-default-rtdb.firebaseio.com",
+    "project_id": "boomboomtictactoe",
+    "storage_bucket": "boomboomtictactoe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:205126685074:android:d6002a6c0b0629dbe7b14b",
+        "android_client_info": {
+          "package_name": "androidsamples.java.tictactoe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqSWroc5MSZj-El0mb4Jpj0e_Djt4tEss"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

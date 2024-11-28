@@ -1,6 +1,7 @@
 package androidsamples.java.tictactoe;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,18 +10,32 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class DashboardFragment extends Fragment {
 
   private static final String TAG = "DashboardFragment";
   private NavController mNavController;
+
+  private FirebaseAuth mAuth;
+  private TextView wonText, lostText, infoText;
+  private DatabaseReference gamesReference, userReference;
+  private RecyclerView rv;
+  private ProgressDialog pd;
+  private DashboardViewModel viewModel;
 
   /**
    * Mandatory empty constructor for the fragment manager to instantiate the
@@ -35,6 +50,9 @@ public class DashboardFragment extends Fragment {
     Log.d(TAG, "onCreate");
 
     setHasOptionsMenu(true); // Needed to display the action menu for this fragment
+    gamesReference = FirebaseDatabase.getInstance("https://boomboomtictactoe-default-rtdb.firebaseio.com/").getReference("games");
+
+    viewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
   }
 
   @Override
@@ -49,7 +67,13 @@ public class DashboardFragment extends Fragment {
     super.onViewCreated(view, savedInstanceState);
     mNavController = Navigation.findNavController(view);
 
+
     // TODO if a user is not logged in, go to LoginFragment
+    mAuth = FirebaseAuth.getInstance();
+    if (mAuth.getCurrentUser() == null) {
+      mNavController.navigate(R.id.action_need_auth);
+      return;
+    }
 
     // Show a dialog when the user clicks the "new game" button
     view.findViewById(R.id.fab_new_game).setOnClickListener(v -> {
@@ -66,8 +90,8 @@ public class DashboardFragment extends Fragment {
 
         // Passing the game type as a parameter to the action
         // extract it in GameFragment in a type safe way
-        NavDirections action = DashboardFragmentDirections.actionGame(gameType);
-        mNavController.navigate(action);
+//        NavDirections action = DashboardFragmentDirections.actionGame(gameType);
+//        mNavController.navigate(action);
       };
 
       // create the dialog

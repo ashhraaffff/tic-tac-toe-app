@@ -24,4 +24,6 @@
   <string name="yes">Yes</string>
   <string name="cancel">Cancel</string>
   <string name="confirm">Confirm</string>
+
+  <string name="register">Register</string>
 </resources>
