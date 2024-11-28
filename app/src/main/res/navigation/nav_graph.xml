@@ -18,7 +18,7 @@
       android:id="@+id/gameFragment"
       android:name="androidsamples.java.tictactoe.GameFragment"
       android:label="@string/game_fragment_label"
-      tools:layout="@layout/fragment_game">
+      tools:layout="@layout/fragment_game_new">
     <argument
         android:name="gameType"
         app:argType="string" />
