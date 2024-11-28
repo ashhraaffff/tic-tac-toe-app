@@ -101,6 +101,7 @@
                 android:layout_weight="1"
                 android:adjustViewBounds="true"
                 android:background="@drawable/round_back_dark_blue_20"
+                android:contentDescription="Placeholder for icons, square 1"
                 android:padding="20dp"
                 android:src="@drawable/completely_transparent" />
 
@@ -114,6 +115,7 @@
                 android:layout_weight="1"
                 android:adjustViewBounds="true"
                 android:background="@drawable/round_back_dark_blue_20"
+                android:contentDescription="Placeholder for icons, square 2"
                 android:padding="20dp"
                 android:src="@drawable/completely_transparent" />
 
