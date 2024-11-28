@@ -6,7 +6,7 @@
   <string name="game_fragment_label">Tic Tac Toe: Game</string>
   <string name="dashboard_fragment_label">Tic Tac Toe: Dashboard</string>
 
-  <string name="login">Register or Log In</string>
+  <string name="login">Log In</string>
   <string name="logout">Log Out</string>
 
   <string name="new_game">New Game</string>
