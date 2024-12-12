@@ -1,6 +1,9 @@
 package androidsamples.java.tictactoe;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +31,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -65,6 +69,12 @@ public class GameFragment extends Fragment {
   private boolean enableMockAI = false; // Static field to persist mock state
   private List<Integer> mockAIMoves;
   private int currentAIMoveIndex = 0;
+
+
+  private SensorManager sensorManager;
+  private Sensor accelerometer;
+  private ShakeDetector shakeDetector;
+
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -218,7 +228,7 @@ public class GameFragment extends Fragment {
     player2Icon = view.findViewById(R.id.player2_icon);
 
     if (!isSinglePlayer) {
-      setupPlayerNames(player1TV_val,player2TV_val);
+      setupPlayerNames(player1TV_val, player2TV_val);
 
       boolean check = false;
       for (String s : inputText) {
@@ -248,22 +258,65 @@ public class GameFragment extends Fragment {
     mImageViews[7] = view.findViewById(R.id.image8);
     mImageViews[8] = view.findViewById(R.id.image9);
 
-    if(isSinglePlayer){
-      if(savedInstanceState != null) {
+    if (isSinglePlayer) {
+      if (savedInstanceState != null) {
         inputText = savedInstanceState.getStringArray(TAG);
         updateUI();
+      }
+
+      // Initialize shake detection for single-player games
+      sensorManager = (SensorManager) requireContext().getSystemService(Context.SENSOR_SERVICE);
+      if (sensorManager != null) {
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        shakeDetector = new ShakeDetector(() -> {
+          if (!gameEnded) {
+            AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.confirm)
+                    .setMessage(R.string.forfeit_game_dialog_message)
+                    .setPositiveButton(R.string.yes, (d, which) -> {
+                      userQuitUpdateListener = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                          if (isAdded()) {
+                            int value = Integer.parseInt(dataSnapshot.child("lost").getValue().toString());
+                            dataSnapshot.getRef().child("lost").setValue(value + 1);
+                          }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {}
+                      };
+
+                      userReference.addListenerForSingleValueEvent(userQuitUpdateListener);
+
+                      if (!isSinglePlayer) {
+                        gameReference.child("hasForfeit").setValue(true);
+                        gameEnded = true;
+                      }
+
+                      if (isAdded()) {
+                        mNavController.popBackStack();
+                      }
+                    })
+                    .setNegativeButton(R.string.cancel, (d, which) -> d.dismiss())
+                    .create();
+
+            if (isAdded()) {
+              dialog.show();
+            }
+          }
+        });
       }
     }
 
     quitButton = view.findViewById(R.id.quit_btn);
-    //quitButtonListener
     quitButton.setOnClickListener(v -> {
       if (!gameEnded) {
         AlertDialog dialog = new AlertDialog.Builder(requireContext())
                 .setTitle(R.string.confirm)
                 .setMessage(R.string.forfeit_game_dialog_message)
                 .setPositiveButton(R.string.yes, (d, which) -> {
-                  userQuitUpdateListener = new ValueEventListener(){
+                  userQuitUpdateListener = new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                       if (isAdded()) {
@@ -271,6 +324,7 @@ public class GameFragment extends Fragment {
                         dataSnapshot.getRef().child("lost").setValue(value + 1);
                       }
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
                   };
@@ -303,7 +357,7 @@ public class GameFragment extends Fragment {
       int finalI = i;
       mImageViews[i].setOnClickListener(v -> {
         Log.d(TAG, "Image " + finalI + " clicked");
-        if(myTurn){
+        if (myTurn) {
           setMove(mImageViews[finalI], myChar);
           inputText[finalI] = myChar;
           mImageViews[finalI].setClickable(false);
@@ -316,7 +370,7 @@ public class GameFragment extends Fragment {
           myTurn = !myTurn;
           updateTurnIndicator(myTurn);
 
-          if(isSinglePlayer){
+          if (isSinglePlayer) {
             computerMove();
           } else {
             waitForTurn();
@@ -327,6 +381,7 @@ public class GameFragment extends Fragment {
       });
     }
   }
+
 
   @Override
   public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -706,4 +761,19 @@ public class GameFragment extends Fragment {
     }
   }
 
+  @Override
+  public void onResume() {
+    super.onResume();
+    if (isSinglePlayer && sensorManager != null && accelerometer != null) {
+      sensorManager.registerListener(shakeDetector, accelerometer, SensorManager.SENSOR_DELAY_UI);
+    }
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
+    if (isSinglePlayer && sensorManager != null) {
+      sensorManager.unregisterListener(shakeDetector);
+    }
+  }
 }
